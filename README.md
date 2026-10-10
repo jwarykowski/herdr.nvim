@@ -1,0 +1,87 @@
+# herdr.nvim
+
+Send code from Neovim to a coding agent running in [herdr](https://herdr.dev),
+without leaving the editor.
+
+Select some lines, run `:HerdrSend`, type what you want ("why does this panic?",
+"add a test for this"), and the agent in the next pane gets your instruction
+plus `file:line` and the code in a fenced block, along with any diagnostics on
+those lines. Works with any agent herdr runs: Claude Code, Codex, OpenCode, and
+others.
+
+- [requirements](#requirements)
+- [install](#install)
+- [usage](#usage)
+- [configuration](#configuration)
+- [development](#development)
+
+## requirements
+
+- Neovim ≥ 0.11 (`vim.system`, `vim.ui`).
+- [herdr](https://herdr.dev), with nvim running inside a herdr pane and an
+  agent in another pane of the same workspace.
+
+## install
+
+[lazy.nvim](https://github.com/folke/lazy.nvim):
+
+```lua
+return {
+	"jwarykowski/herdr.nvim",
+	cmd = { "HerdrSend", "HerdrFocus" },
+	keys = {
+		{ "<leader>ai", "<cmd>HerdrSend<cr>", desc = "agent: ask about this line" },
+		{ "<leader>ai", ":HerdrSend<cr>", mode = "x", desc = "agent: ask about selection" },
+		{ "<leader>aI", "<cmd>HerdrSend!<cr>", desc = "agent: ask, picking the agent" },
+		{ "<leader>af", "<cmd>HerdrFocus<cr>", desc = "agent: focus its pane" },
+	},
+	opts = {},
+}
+```
+
+Other plugin managers: add the repo and call `require("herdr").setup()`.
+
+## usage
+
+- `:HerdrSend` — prompt for an instruction and send it with the cursor's
+  `file:line` to an agent. With a range (`:'<,'>HerdrSend`, or from visual
+  mode) it sends `file:first-last` and the lines in a fenced block.
+- Agent choice: with one agent in the workspace it goes straight there; with
+  several you pick, and later sends reuse that agent while it is still running.
+  `:HerdrSend!` picks again.
+- Diagnostics (errors, warnings) on the sent lines are appended, so "fix this"
+  needs no copy-pasting.
+- `:HerdrFocus` — jump to the agent's pane (the last one sent to, else pick);
+  `:HerdrFocus!` picks.
+
+The pane nvim runs in is never offered, so an agent running nvim can't prompt
+itself.
+
+Run `:checkhealth herdr` to check the binary, the pane, and `herdr agent list`.
+
+## configuration
+
+```lua
+require("herdr").setup({
+	cmd = nil, -- herdr binary; default $HERDR_BIN_PATH, else herdr on $PATH
+	diagnostics = true, -- append diagnostics on the sent lines
+	scope = "workspace", -- or "all": offer agents from every herdr workspace
+})
+```
+
+## development
+
+```sh
+make fmt     # stylua
+make lint    # stylua --check + luacheck
+make test    # busted (specs run under Neovim via nlua)
+make check   # lint + test
+```
+
+Test deps: `luarocks install busted nlua`. The specs cover the pure helpers
+(agent filtering, labels, the prompt and context format, agent choice) exposed
+on `require("herdr")._internal`; CI runs them on Neovim stable and nightly.
+
+## license
+
+[MIT](LICENSE)
