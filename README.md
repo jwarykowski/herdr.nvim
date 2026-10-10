@@ -14,6 +14,7 @@ others.
 - [usage](#usage)
 - [configuration](#configuration)
 - [development](#development)
+- [support](#support)
 
 ## requirements
 
@@ -84,8 +85,8 @@ on `require("herdr")._internal`; CI runs them on Neovim stable and nightly.
 
 ## support
 
-herdr.nvim is free and MIT licensed. If it saves you some copy and paste, you can
-[sponsor its development](https://github.com/sponsors/jwarykowski).
+herdr.nvim is free and MIT licensed. If it saves you some copy and paste, you
+can [sponsor its development](https://github.com/sponsors/jwarykowski).
 
 ## license
 
