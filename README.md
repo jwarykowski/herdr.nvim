@@ -1,3 +1,8 @@
+<table>
+<tr>
+<td width="200" valign="top"><img src="assets/herdr.nvim.png" alt="herdr.nvim" width="180"></td>
+<td valign="top">
+
 # herdr.nvim
 
 Send code from Neovim to a coding agent running in [herdr](https://herdr.dev),
@@ -83,5 +88,9 @@ Test deps: `luarocks install busted nlua`. The specs cover the pure helpers
 on `require("herdr")._internal`; CI runs them on Neovim stable and nightly.
 
 ## license
+
+</td>
+</tr>
+</table>
 
 [MIT](LICENSE)
