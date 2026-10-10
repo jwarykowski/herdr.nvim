@@ -57,6 +57,19 @@ Other plugin managers: add the repo and call `require("herdr").setup()`.
 The pane nvim runs in is never offered, so an agent running nvim can't prompt
 itself.
 
+### pomodoro in the statusline
+
+`require("herdr").pomodoro()` returns the
+[herdr-pomodoro](https://github.com/jwarykowski/herdr-pomodoro) timer
+(`🍅 12:34`, `☕ 3:10`, `⏸`) or `""` with none running. It reads the plugin's
+state file at most once a second, so it is cheap on every redraw. With lualine:
+
+```lua
+sections = {
+	lualine_x = { function() return require("herdr").pomodoro() end, "filetype" },
+},
+```
+
 Run `:checkhealth herdr` to check the binary, the pane, and `herdr agent list`.
 
 ## configuration
@@ -66,6 +79,7 @@ require("herdr").setup({
 	cmd = nil, -- herdr binary; default $HERDR_BIN_PATH, else herdr on $PATH
 	diagnostics = true, -- append diagnostics on the sent lines
 	scope = "workspace", -- or "all": offer agents from every herdr workspace
+	pomodoro_icons = { work = "🍅", ["break"] = "☕", idle = "⏸" },
 })
 ```
 

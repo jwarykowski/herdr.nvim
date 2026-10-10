@@ -4,6 +4,8 @@ local defaults = {
 	cmd = nil, -- herdr binary; nil = $HERDR_BIN_PATH, else "herdr"
 	diagnostics = true, -- include diagnostics on the sent lines in the prompt
 	scope = "workspace", -- "workspace": agents in this herdr workspace; "all": every agent
+	-- statusline icons for herdr-pomodoro's phases
+	pomodoro_icons = { work = "🍅", ["break"] = "☕", idle = "⏸" },
 }
 
 local config = vim.tbl_deep_extend("force", {}, defaults)
@@ -198,12 +200,52 @@ function M.setup(opts)
 	end, { bang = true, desc = "focus the herdr agent last sent to (! = pick agent)" })
 end
 
+-- format_pomodoro renders herdr-pomodoro's state for a statusline: "🍅 12:34"
+-- while a phase runs, the idle icon between rounds, else "".
+local function format_pomodoro(state, now, icons)
+	if type(state) ~= "table" then
+		return ""
+	end
+	if state.phase == "idle" then
+		return icons.idle or ""
+	end
+	local icon = state.phase == "work" and icons.work or icons["break"]
+	if not icon or type(state.ends_at) ~= "number" then
+		return ""
+	end
+	local left = math.max(0, state.ends_at - now)
+	return ("%s %d:%02d"):format(icon, math.floor(left / 60), left % 60)
+end
+
+-- the state file is re-read at most once a second, however often the
+-- statusline redraws
+local pomodoro_cache = { at = -1, state = nil }
+
+-- pomodoro returns the herdr-pomodoro timer for a statusline component, or ""
+-- when no timer runs. It reads the plugin's state file; no herdr call.
+function M.pomodoro()
+	local now = os.time()
+	if pomodoro_cache.at ~= now then
+		pomodoro_cache.at = now
+		local dir = vim.env.XDG_STATE_HOME or (vim.env.HOME .. "/.local/state")
+		local f = io.open(dir .. "/herdr-pomodoro/state.json", "r")
+		pomodoro_cache.state = nil
+		if f then
+			local ok, data = pcall(vim.json.decode, f:read("*a"))
+			f:close()
+			pomodoro_cache.state = ok and data or nil
+		end
+	end
+	return format_pomodoro(pomodoro_cache.state, now, config.pomodoro_icons)
+end
+
 -- _internal exposes pure helpers for the test suite; not part of the public API.
 M._internal = {
 	filter_agents = filter_agents,
 	agent_label = agent_label,
 	format_context = format_context,
 	build_prompt = build_prompt,
+	format_pomodoro = format_pomodoro,
 	set_config = function(c)
 		last = nil
 		config = vim.tbl_deep_extend("force", {}, defaults, c or {})
