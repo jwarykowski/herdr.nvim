@@ -1,3 +1,8 @@
+<table>
+<tr>
+<td width="200" valign="top"><img src="assets/herdr.nvim.png" alt="herdr.nvim" width="180"></td>
+<td valign="top">
+
 # herdr.nvim
 
 Send code from Neovim to a coding agent running in [herdr](https://herdr.dev),
@@ -89,5 +94,9 @@ herdr.nvim is free and MIT licensed. If it saves you some copy and paste, you
 can [sponsor its development](https://github.com/sponsors/jwarykowski).
 
 ## license
+
+</td>
+</tr>
+</table>
 
 [MIT](LICENSE)
