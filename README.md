@@ -82,6 +82,11 @@ Test deps: `luarocks install busted nlua`. The specs cover the pure helpers
 (agent filtering, labels, the prompt and context format, agent choice) exposed
 on `require("herdr")._internal`; CI runs them on Neovim stable and nightly.
 
+## support
+
+herdr.nvim is free and MIT licensed. If it saves you some copy and paste, you can
+[sponsor its development](https://github.com/sponsors/jwarykowski).
+
 ## license
 
 [MIT](LICENSE)
