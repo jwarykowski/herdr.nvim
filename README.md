@@ -1,7 +1,4 @@
-<table>
-<tr>
-<td width="200" valign="top"><img src="assets/herdr.nvim.png" alt="herdr.nvim" width="180"></td>
-<td valign="top">
+<p align="center"><img src="assets/herdr.nvim.svg" alt="herdr.nvim" width="120"></p>
 
 # herdr.nvim
 
@@ -94,9 +91,5 @@ herdr.nvim is free and MIT licensed. If it saves you some copy and paste, you
 can [sponsor its development](https://github.com/sponsors/jwarykowski).
 
 ## license
-
-</td>
-</tr>
-</table>
 
 [MIT](LICENSE)
