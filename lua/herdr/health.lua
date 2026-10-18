@@ -1,30 +1,6 @@
 local M = {}
 
--- keybars checks keybars-pro answers, when setup turned keybars on
-local function keybars()
-	local health = vim.health
-	if not require("herdr").keybars_on() then
-		return
-	end
-	health.start("herdr: keybars Pro")
-	local cmd = require("herdr.keybars").command()
-	if vim.fn.executable(cmd) == 0 then
-		health.error("`" .. cmd .. "` not found", {
-			"in keybars Pro: App settings, Command line, Install the command-line tool",
-			"or set `keybars = { cmd = ... }` in setup()",
-		})
-		return
-	end
-	local r = vim.system({ cmd, "status" }, { text = true }):wait()
-	if r.code == 0 then
-		health.ok("`" .. cmd .. " status` works: " .. vim.trim((r.stdout or ""):match("[^\n]*") or ""))
-	else
-		health.warn("keybars Pro isn't running: " .. vim.trim(r.stderr or ""), { "open keybars Pro" })
-	end
-end
-
 function M.check()
-	keybars()
 	local health = vim.health
 	health.start("herdr")
 
