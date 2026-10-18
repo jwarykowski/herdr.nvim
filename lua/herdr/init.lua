@@ -4,6 +4,7 @@ local defaults = {
 	cmd = nil, -- herdr binary; nil = $HERDR_BIN_PATH, else "herdr"
 	diagnostics = true, -- include diagnostics on the sent lines in the prompt
 	scope = "workspace", -- "workspace": agents in this herdr workspace; "all": every agent
+	keybars = false, -- true, or keybars options (lua/herdr/keybars.lua): keybars Pro commands and statusline
 }
 
 local config = vim.tbl_deep_extend("force", {}, defaults)
@@ -16,6 +17,11 @@ local last = nil
 -- into its panes, else herdr on $PATH.
 function M.binary()
 	return config.cmd or vim.env.HERDR_BIN_PATH or "herdr"
+end
+
+-- keybars_on reports whether setup turned on the keybars Pro side.
+function M.keybars_on()
+	return config.keybars and true or false
 end
 
 -- in_herdr reports whether nvim runs inside a herdr pane.
@@ -196,6 +202,10 @@ function M.setup(opts)
 	vim.api.nvim_create_user_command("HerdrFocus", function(a)
 		M.focus(a.bang)
 	end, { bang = true, desc = "focus the herdr agent last sent to (! = pick agent)" })
+
+	if config.keybars then
+		require("herdr.keybars").setup(config.keybars)
+	end
 end
 
 -- _internal exposes pure helpers for the test suite; not part of the public API.

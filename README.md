@@ -15,6 +15,7 @@ others.
 - [install](#install)
 - [usage](#usage)
 - [configuration](#configuration)
+- [keybars Pro](#keybars-pro)
 - [development](#development)
 - [support](#support)
 
@@ -69,8 +70,53 @@ require("herdr").setup({
 	cmd = nil, -- herdr binary; default $HERDR_BIN_PATH, else herdr on $PATH
 	diagnostics = true, -- append diagnostics on the sent lines
 	scope = "workspace", -- or "all": offer agents from every herdr workspace
+	keybars = false, -- true, or a table of the options below
 })
 ```
+
+## keybars Pro
+
+With [keybars Pro](https://keybars.app/pro/) and its `keybars-pro` command,
+`keybars = true` adds the keyboard's side of the editor. Everything goes
+through [`keybars-pro`](https://keybars.app/pro/cli/), so it works on any
+keyboard keybars Pro drives.
+
+- `:KeybarsRun make test` runs a command through `keybars-pro run`, so the
+  keyboard shows `build.running`, then `build.passed` or `build.failed` (the
+  marketplace's CI pack plays them), and a failure's output opens in the
+  quickfix list.
+- `:KeybarsFocus [start|stop|status]` drives keybars Pro's Focus timer.
+- `require("herdr.keybars").status()` is a statusline component: `🎯12m · 74
+  wpm` while Focus or Typing runs, else `""`. It follows one `keybars-pro
+  watch` for the session, so it's cheap on every redraw.
+- With `diagnostics = true`, a key holds red while any loaded buffer has
+  errors, and clears when they're fixed.
+
+[herdr-keybars](https://code.warykowski.io/jwarykowski/herdr-keybars) lights
+your agents' workspaces; this is the editor's half.
+
+```lua
+opts = {
+	keybars = {
+		cmd = "keybars-pro", -- the command, if it isn't on $PATH
+		run_name = "build", -- :KeybarsRun's events: <name>.running, .passed, .failed
+		diagnostics = false, -- hold a key while there are errors
+		diagnostics_key = "esc", -- as keybars-pro light names keys: esc, top-right, r2c1...
+		diagnostics_colour = "red",
+		statusline = { focus = true, typing = true },
+	},
+},
+```
+
+With lualine:
+
+```lua
+sections = {
+	lualine_x = { function() return require("herdr.keybars").status() end, "filetype" },
+},
+```
+
+`:checkhealth herdr` also checks `keybars-pro` answers when this is on.
 
 ## development
 
