@@ -75,7 +75,7 @@ require("herdr").setup({
 ## keybars Pro
 
 With [keybars Pro](https://keybars.app/pro/),
-[keybars.nvim](https://code.warykowski.io/jwarykowski/keybars.nvim) puts the
+[keybars-nvim](https://code.warykowski.io/jwarykowski/keybars-nvim) puts the
 editor's work on the keyboard: `:KeybarsRun` shows a build there, errors can
 hold a key, and the statusline shows Focus and typing speed.
 
